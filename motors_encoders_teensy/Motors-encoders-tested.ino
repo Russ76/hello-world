@@ -1,7 +1,6 @@
 // Diffbot enhancement for Teensy board
 // Uses L298 motor controller or Ardumoto
-// Motor scale for needed input 0-200, centered at 100 (stop)
-// 1 is high speed reverse, 99 low, and 199 high speed forward, 101 low.
+// Motor scale for needed input -99 to 99, centered at 0 (stop)
 // Callback routine multiplies number by 2.55 for L298 range
 // Encoder ticks published
 
@@ -27,7 +26,6 @@ int rightpwr;
 #define DIRB 5 // Direction control1 for motor B (L298 IN3)
 #define PWMB 6 // PWM control (speed) for motor B (L298 ENB)
 #define DIRD 7 // Direction control2 for motor B (L298 IN4)
-float var;
 
 // Encoder setup
 #define ENCODER_OPTIMIZE_INTERRUPTS //Only for Teensy
@@ -41,21 +39,20 @@ ros::NodeHandle nh;
 void left_motorCb(const std_msgs::Int32& msg)
 {
   //nh.loginfo("I heard new left input");
-
-  var=msg.data;
-  leftpwr=var-100;
+  
+  leftpwr=msg.data;
     if (leftpwr > 0) {
     leftpwr = int(2.55*(leftpwr));
-    nh.loginfo("LEFT FORWARD");
+    //nh.loginfo("LEFT FORWARD");
     driveArdumoto(MOTOR_A, FORWARD, leftpwr);
   }
     else if (leftpwr < 0) {
     leftpwr = -int(2.55*(leftpwr));
-    nh.loginfo("LEFT REVERSE");
+    //nh.loginfo("LEFT REVERSE");
     driveArdumoto(MOTOR_A, REVERSE, leftpwr);
   }
     else if (leftpwr == 0) {
-    nh.loginfo("LEFT STOP");
+    //nh.loginfo("LEFT STOP");
     stopArdumoto(MOTOR_A);
   }
 }
@@ -68,21 +65,20 @@ void resetCb( const std_msgs::Empty& reset)
 void right_motorCb(const std_msgs::Int32& msg)
 {
   //nh.loginfo("I heard new right input");
-
-  var=msg.data;
-  rightpwr=var-100;
+  
+  rightpwr=msg.data;
     if (rightpwr > 0) {
     rightpwr = int(2.55*(rightpwr));
-    nh.loginfo("RIGHT FORWARD");
+    //nh.loginfo("RIGHT FORWARD");
     driveArdumoto(MOTOR_B, FORWARD, rightpwr);
   }
     else if (rightpwr < 0) {
     rightpwr = -int(2.55*(rightpwr));
-    nh.loginfo("RIGHT REVERSE");
+    //nh.loginfo("RIGHT REVERSE");
     driveArdumoto(MOTOR_B, REVERSE, rightpwr);
   }
     else if (rightpwr == 0) {
-    nh.loginfo("RIGHT STOP");
+    //nh.loginfo("RIGHT STOP");
     stopArdumoto(MOTOR_B);
   }
 }
